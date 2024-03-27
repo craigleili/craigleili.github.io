@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  
+  <head>
+    
+
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GenZI: Zero-Shot 3D Human-Scene Interaction Generation</title>
+    <meta name="author" content="Lei  Li" />
+    <meta name="description" content="GenZI: the first zero-shot approach to generating 3D human-scene interactions" />
+    <meta name="keywords" content="Human-Scene Interaction, Vision-Language Model" />
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous" />
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:400,500,700|Roboto+Slab:400,500,700|Material+Icons">
+
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" media="none" id="highlight_theme_light" />
+
+    
+    
+    <link rel="shortcut icon" href="/assets/img/favicon.ico"/>
+    
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <link rel="canonical" href="https://craigleili.github.io/projects/genzi/">
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/native.css" media="none" id="highlight_theme_dark" />
+
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/dark_mode.js"></script>
+    
+    <style>
+      .embed-responsive-3by1 {
+        padding-top: 35%;
+      }
+    </style>
+  </head>
+
+  
+  <body class=" sticky-bottom-footer">
+
+    
+    <div class="container mt-5">
+      <div class="post">
+    <h1 class="post-title text-center">GenZI: Zero-Shot 3D Human-Scene Interaction Generation</h1>
+    <div class="d-flex justify-content-center">
+        <ul class="list-inline">
+            <li class="list-inline-item px-3 pt-3">
+                <h4><a href="https://craigleili.github.io" target="_blank" rel="noopener noreferrer">Lei Li</a></h4>
+            </li>
+            <li class="list-inline-item px-3 pt-3">
+                <h4><a href="https://www.3dunderstanding.org/team.html" target="_blank" rel="noopener noreferrer">Angela Dai</a></h4>
+            </li>
+        </ul>
+    </div>
+    <div class="d-flex justify-content-center">
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <h5>Technical University of Munich</h5>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="d-flex justify-content-center">
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <h4>CVPR 2024</h4>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="d-flex justify-content-center">
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a href="https://arxiv.org/pdf/2311.17737.pdf" target="_blank" rel="noopener noreferrer">
+                    <span class="btn btn-outline-dark btn-sm waves-effect waves-light"><i class="fas fa-file-pdf"></i> Paper</span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="https://youtu.be/ozfs6E0JIMY" target="_blank" rel="noopener noreferrer">
+                    <span class="btn btn-outline-dark btn-sm waves-effect waves-light"><i class="fab fa-youtube"></i> Video</span>
+                </a>
+            </li>
+            <li class="list-inline-item">
+                <a href="https://github.com/craigleili/GenZI" target="_blank" rel="noopener noreferrer">
+                    <span class="btn btn-outline-dark btn-sm waves-effect waves-light"><i class="fab fa-github"></i> Code</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="embed-responsive embed-responsive-16by9">
+        <video class="embed-responsive-item" muted="" autoplay="" loop="">
+            <source src="/assets/video/2023-genzi-results1.mp4" type="video/mp4"></source>
+        </video>
+    </div>
+    <p>
+        Given an arbitrary 3D scene, GenZI can synthesize virtual humans interacting with the 3D environment at specified locations from a brief text description. Our approach does not require any 3D human-scene interaction training data or 3D learning.
+    </p>
+    <h2 class="text-center">Abstract</h2>
+    <p>Can we synthesize 3D humans interacting with scenes without learning from any 3D human-scene interaction data? We propose GenZI, the first zero-shot approach to generating 3D human-scene interactions. Key to GenZI is our distillation of interaction priors from large vision-language models (VLMs), which have learned a rich semantic space of 2D human-scene compositions.</p>
+    <p>Given a natural language description and a coarse point location of the desired interaction in a 3D scene, we first leverage VLMs to imagine plausible 2D human interactions inpainted into multiple rendered views of the scene. We then formulate a robust iterative optimization to synthesize the pose and shape of a 3D human model in the scene, guided by consistency with the 2D interaction hypotheses.</p>
+    <p>In contrast to existing learning-based approaches, GenZI circumvents the conventional need for captured 3D interaction data, and allows for flexible control of the 3D interaction synthesis with easy-to-use text prompts. Extensive experiments show that our zero-shot approach has high flexibility and generality, making it applicable to diverse scene types, including both indoor and outdoor environments.</p>
+    <h2 class="text-center pt-3">Video</h2>
+    <div class="embed-responsive embed-responsive-16by9">
+        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/ozfs6E0JIMY?si=dXwBBn2p1fPTKw7O" allowfullscreen=""></iframe>
+    </div>
+    <h2 class="text-center pt-5">How It Works</h2>
+    <div class="row">
+        <div class="col-sm mt-3 mt-md-0">
+            <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/2023-genzi-pipeline-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/2023-genzi-pipeline-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/2023-genzi-pipeline-1400.webp"></source>
+    
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/2023-genzi-pipeline.jpg" title="Method">
+
+  </picture>
+
+</figure>
+
+        </div>
+    </div>
+    <p>
+        GenZI distills information from vision-language model for 3D human-scene interaction. We first leverage large vision-language models to synthesize possible 2D humans interactions with the 3D scene by employing latent diffusion inpainting on multiple rendered views of the environment at location p using our dynamic masking scheme to automatically estimate inpainting masks. We then lift these 2D hypotheses to 3D in a robust optimization for a 3D parametric body model (SMPL-X) that is most consistent with detected 2D poses in the inpainted 2D hypotheses. This produces a semantically consistent interaction that respects the scene context, without requiring any 3D human-scene interaction data.
+    </p>
+    <h2 class="text-center pt-3">Zero-Shot 3D Interaction Generations</h2>
+    <div class="embed-responsive embed-responsive-3by1">
+        <video class="embed-responsive-item" muted="" autoplay="" loop="">
+            <source src="/assets/video/2023-genzi-results2.mp4" type="video/mp4"></source>
+        </video>
+    </div>
+    <div class="embed-responsive embed-responsive-3by1">
+        <video class="embed-responsive-item" muted="" autoplay="" loop="">
+            <source src="/assets/video/2023-genzi-results3.mp4" type="video/mp4"></source>
+        </video>
+    </div>
+    <div class="embed-responsive embed-responsive-3by1">
+        <video class="embed-responsive-item" muted="" autoplay="" loop="">
+            <source src="/assets/video/2023-genzi-results4.mp4" type="video/mp4"></source>
+        </video>
+    </div>
+    <h2 class="text-center pt-3">Comparisons</h2>
+    <div class="row">
+        <div class="col-sm mt-3 mt-md-0">
+            <figure>
+
+  <picture>
+    <source media="(max-width: 480px)" srcset="/assets/img/2023-genzi-comparisons-480.webp"></source>
+    <source media="(max-width: 800px)" srcset="/assets/img/2023-genzi-comparisons-800.webp"></source>
+    <source media="(max-width: 1400px)" srcset="/assets/img/2023-genzi-comparisons-1400.webp"></source>
+    
+    <img class="img-fluid rounded z-depth-1" src="/assets/img/2023-genzi-comparisons.jpg" title="Comparisons">
+
+  </picture>
+
+</figure>
+
+        </div>
+    </div>
+    <p>
+        GenZI synthesizes more realistic 3D human-scene interactions and generalizes better across scene types, when compared to baseline methods that are either trained on indoor interaction data or base on 3D human estimation from a single RGB image.
+    </p>
+    <h2 class="text-center pt-3">Citation</h2>
+    <div class="bibtex">
+
+<figure class="highlight"><pre><code class="language-bibtex" data-lang="bibtex"><span class="nc">@article</span><span class="p">{</span><span class="nl">li2023genzi</span><span class="p">,</span>
+    <span class="na">title</span>   <span class="p">=</span> <span class="s">{{GenZI}: Zero-Shot 3D Human-Scene Interaction Generation}</span><span class="p">,</span>
+    <span class="na">author</span>  <span class="p">=</span> <span class="s">{Li, Lei and Dai, Angela}</span><span class="p">,</span>
+    <span class="na">journal</span> <span class="p">=</span> <span class="s">{arXiv}</span><span class="p">,</span>
+    <span class="na">year</span>    <span class="p">=</span> <span class="s">{2023}</span>
+<span class="p">}</span></code></pre></figure>
+
+    </div>
+    <h2 class="text-center pt-3">Acknowledgements</h2>
+    <div class="caption text-left">
+        <p>This project is funded by the ERC Starting Grant SpatialSem (101076253), and the German Research Foundation (DFG) Grant "Learning How to Interact with Scenes through Part-Based Understanding", and supported in part by a Google research gift.</p>
+        <p>We thank the following artists for generously sharing their 3D scene designs on Sketchfab.com:
+        <a href="https://skfb.ly/oGTO6" target="_blank" rel="noopener noreferrer">a Food Truck Project</a> by xanimvm,
+        <a href="https://skfb.ly/6RoYD" target="_blank" rel="noopener noreferrer">WW2 Cityscene - Carentan inspired</a> by SilkevdSmissen are licensed under <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener noreferrer">CC Attribution-NonCommercial-NoDerivs</a>.
+        <a href="https://skfb.ly/6GxUO" target="_blank" rel="noopener noreferrer">Bangkok City Scene</a> by ArneDC,
+        <a href="https://skfb.ly/6QYJI" target="_blank" rel="noopener noreferrer">Low Poly Farm V2</a> by EdwiixGG,
+        <a href="https://skfb.ly/6R6MM" target="_blank" rel="noopener noreferrer">Low Poly Winter Scene</a> by EdwiixGG,
+        <a href="https://skfb.ly/6VTUu" target="_blank" rel="noopener noreferrer">Modular Gym</a> by Kristen Brown,
+        <a href="https://skfb.ly/6ToLn" target="_blank" rel="noopener noreferrer">1DAE10 Quintyn Glenn City Scene Kyoto</a> by Glenn.Quintyn, and
+        <a href="https://skfb.ly/6TptH" target="_blank" rel="noopener noreferrer">Venice city scene 1DAE08 Aaron Ongena</a> by AaronOngena are licensed under 
+        <a href="http://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons Attribution</a>.
+        </p>
+    </div>
+</div>
+
+    </div>
+
+    
+    
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+
+    
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.2/dist/umd/popper.min.js" integrity="sha256-l/1pMF/+J4TThfgARS6KwWrk/egwuVvhRzfLAMQ6Ds4=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js" integrity="sha256-SyTu6CwrfOhaznYZPoolVw2rxoY7lKYKQvqbtqN93HI=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script>
+
+    
+  <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+  <script defer src="/assets/js/masonry.js" type="text/javascript"></script>
+    
+  
+  <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.6/dist/medium-zoom.min.js" integrity="sha256-EdPgYcPk/IIrw7FYeuJQexva49pVRZNmt3LculEr7zM=" crossorigin="anonymous"></script>
+  <script src="/assets/js/zoom.js"></script>
+  <script src="/assets/js/common.js"></script>
+
+    
+  <script type="text/javascript">
+    window.MathJax = {
+      tex: {
+        tags: 'ams'
+      }
+    };
+  </script>
+  <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script>
+  <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+
+    
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-P3RT2Z6SLL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-P3RT2Z6SLL');
+  </script>
+  </body>
+</html>
+

@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /assets/css/
+Disallow: /assets/img/
+Disallow: /assets/js/
+
+Sitemap: https://craigleili.github.io/sitemap.xml
